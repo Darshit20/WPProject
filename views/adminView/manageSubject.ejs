@@ -1,0 +1,102 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+
+    <div class="right_col" role="main">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="example">
+            <div id="grid"></div>
+            <script>
+                $(document).ready(function() {
+                    dataSource = new kendo.data.DataSource({
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "/subject",
+
+                            },
+                            update: {
+                                url: "/updatesubject",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+                            },
+                            destroy: {
+                                url: "/deletesubject",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+                            },
+                            create: {
+                                url: "/insertsubject",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+
+                            },
+                            parameterMap: function(options, operation) {
+                                if (operation !== "read" && options.models) {
+                                    return {
+                                        models: options.models
+                                    };
+                                }
+                            }
+                        },
+
+                        batch: true,
+                        pageSize: 10,
+
+                        schema: {
+                            model: {
+                                id: "subject_id",
+                                fields: {
+                                    subject_id: {
+                                        editable: false
+                                    },
+                                    subject_name: {
+                                        validation: {
+                                            required: true
+                                        }
+                                    },
+
+                                }
+
+                            }
+                        }
+
+                    });
+                    $("#grid").kendoGrid({
+
+                        dataSource: dataSource,
+                        pageable: true,
+                        height: 550,
+                        toolbar: ["create"],
+                        columns: [{
+                            field: "subject_id",
+                            title: "Subject id",
+                            hidden: true
+                        }, {
+                            field: "subject_name",
+                            title: "Subject name",
+                        }, {
+                            command: ["edit", "destroy"],
+                            title: "&nbsp;",
+                            width: "250px"
+                        }],
+                        editable: "popup"
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+
+
+    <%- include("../adminView/footerAdmin.ejs"); -%>

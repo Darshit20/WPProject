@@ -1,0 +1,130 @@
+<%- include("../teacherView/headerTeacher.ejs"); -%>
+
+
+
+    <div class="right_col" role="main">
+
+        <div class="x_content">
+            <form class="" action="" method="post" enctype="multipart/form-data" novalidate>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Profile pic</label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" type="file" name="fileupd" /> </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+					  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="name" value="<%=userInfo %>" />
+                    </div>
+                </div>
+
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Sem<span
+					  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <p style="padding: 5px;">
+                            <% sem_data.forEach(function(data){ %>
+                                <input type="checkbox" name="semdata[]" id="<%=data.sem_id%>" value="<%=data.sem_id%>" class="flat sem" />
+                                <%=data.sem%>
+                                    <%  }) %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Subject:</label>
+                    <div class="col-md-6 col-sm-6">
+                        <p style="padding: 5px;">
+                            <% subject_data.forEach(function(data){ %>
+                                <input type="checkbox" name="subject[]" id="<%=data.subject_id%>" value="<%=data.subject_id%>" class="flat sub" />
+                                <%=data.subject_name%>
+                                    <% }) %>
+                        </p>
+                    </div>
+                </div>
+
+                <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+                <label>
+					  <input type="radio" name="gender" value="male" id="umale"  >&nbsp;&nbsp;Male 
+					</label> &nbsp;&nbsp;
+                <label>
+					  <input type="radio" name="gender" value="female" id="ufemale" >&nbsp;&nbsp;Female
+					</label>
+                <br>
+                <br>
+                <label class="col-form-label col-md-3 col-sm-3  label-align">DOB<span
+						class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" class='date' type="date" name="date" id="udate" required='required'></div>
+                <br>
+                <br>
+                <br>
+                <div class="col-md-6 offset-md-3">
+                    <button class="btn btn-primary" id="btns" type="submit">Update</button>
+                    <button type='reset' class="btn btn-success">Reset</button>
+                </div>
+        </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="validator/multifield.js"></script>
+    <script src="validator/validator.js"></script>
+    <script>
+        // initialize a validator instance from the "FormValidator" constructor.
+        // A "<form>" element is optionally passed as an argument, but is not a must
+        var validator = new FormValidator({
+            "events": ['blur', 'input', 'change']
+        }, document.forms[0]);
+    </script>
+    <!-- jQuery -->
+    <script src="jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function getFormattedDate(date) {
+            var year = date.getFullYear();
+
+            var month = (1 + date.getMonth()).toString();
+            month = month.length > 1 ? month : '0' + month;
+
+            var day = date.getDate().toString();
+            day = day.length > 1 ? day : '0' + day;
+
+            return year + '-' + month + '-' + day;
+        }
+        var bdate = getFormattedDate(new Date('<%=dob%>'));
+        $('#udate').attr("value", bdate);
+
+        var gender = '<%=gender%>';
+        if (gender == 'male') {
+            $('#umale').prop("checked", true);
+        } else {
+            $('#ufemale').prop("checked", true);
+        }
+        var checked_sem = '<%-JSON.parse(JSON.stringify(checked_sem))%>';
+        var semester = [];
+        $.each($.parseJSON(checked_sem), function() {
+            semester.push(this.sem_id);
+        })
+        $.each($(".sem"), function() {
+            if ($.inArray($(this).val(), semester) !== -1) {
+                $(this).prop("checked", "true");
+            }
+        });
+
+        var checked_subject = '<%-JSON.parse(JSON.stringify(checked_subject))%>';
+        var subject = [];
+        $.each($.parseJSON(checked_subject), function() {
+            subject.push(this.subject_id);
+        })
+        $.each($(".sub"), function() {
+            if ($.inArray($(this).val(), subject) !== -1) {
+                $(this).prop("checked", "true");
+            }
+        });
+    </script>
+
+    <%- include("../teacherView/footerTeacher.ejs"); -%>

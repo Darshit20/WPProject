@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Overview</title>
+    <meta charset="utf-8">
+    <link href="../content/shared/styles/examples-offline.css" rel="stylesheet">
+    <link href="../../styles/kendo.common.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.rtl.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.default.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.default.mobile.min.css" rel="stylesheet">
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/jszip.min.js"></script>
+    <script src="../../js/kendo.all.min.js"></script>
+    <script src="../content/shared/js/console.js"></script>
+    <script>
+        
+    </script>
+    
+    
+</head>
+<body>
+    
+        <a class="offline-button" href="../index.html">Back</a>
+    
+    <div id="example">
+    <div class="demo-section k-content">
+        <div>
+            <div id="treeview-kendo"></div>
+        </div>
+    </div>
+    <div class="demo-section k-content">
+        <div>
+            <div id="treeview-telerik"></div>
+        </div>
+    </div>
+    <script id="treeview" type="text/kendo-ui-template">
+
+        # if (!item.items && item.spriteCssClass) { #
+        #: item.text #
+        <a class='k-icon k-i-close-outline kendo' href='\#'></a>
+        # } else if(!item.items && !item.spriteCssClass) { #
+        <span class="k-sprite pdf"></span>
+        #: item.text #
+        <a class='k-icon k-i-close-outline telerik' href='\#'></a>
+        # } else if (item.items && item.spriteCssClass){ #
+        #: item.text #
+        # } else { #
+        <span class="k-sprite folder"></span>
+        #: item.text #
+        # } #
+    </script>
+
+    <script>
+        $("#treeview-kendo").kendoTreeView({
+            template: kendo.template($("#treeview").html()),
+            dataSource: [{
+                id: 1, text: "My Documents", expanded: true, spriteCssClass: "rootfolder", items: [
+                    {
+                        id: 2, text: "Kendo UI Project", expanded: true, spriteCssClass: "folder", items: [
+                            { id: 3, text: "about.html", spriteCssClass: "html" },
+                            { id: 4, text: "index.html", spriteCssClass: "html" },
+                            { id: 5, text: "logo.png", spriteCssClass: "image" }
+                        ]
+                    },
+                    {
+                        id: 6, text: "Reports", expanded: true, spriteCssClass: "folder", items: [
+                            { id: 7, text: "February.pdf", spriteCssClass: "pdf" },
+                            { id: 8, text: "March.pdf", spriteCssClass: "pdf" },
+                            { id: 9, text: "April.pdf", spriteCssClass: "pdf" }
+                        ]
+                    }
+                ]
+            }],
+            dragAndDrop: true,
+            checkboxes: {
+                checkChildren:true
+            },
+            loadOnDemand: true
+        });
+
+        $("#treeview-telerik").kendoTreeView({
+            template: kendo.template($("#treeview").html()),
+            dataSource: [{
+                id: 1, text: "My Documents", expanded: true, items: [
+                    {
+                        id: 2, text: "New Web Site", expanded: true, items: [
+                            { id: 3, text: "mockup.pdf" },
+                            { id: 4, text: "Research.pdf" },
+                        ]
+                    },
+                    {
+                        id: 5, text: "Reports", expanded: true, items: [
+                            { id: 6, text: "May.pdf" },
+                            { id: 7, text: "June.pdf" },
+                            { id: 8, text: "July.pdf" }
+                        ]
+                    }
+                ]
+            }],
+            dragAndDrop: true,
+            checkboxes: true,
+            loadOnDemand: true
+        });
+        // Delete button behavior
+        $(document).on("click", ".k-icon.k-i-close-outline.kendo", function (e) {
+            e.preventDefault();
+            var treeview = $("#treeview-kendo").data("kendoTreeView");
+            treeview.remove($(this).closest(".k-item"));
+        });
+        $(document).on("click", ".k-icon.k-i-close-outline.telerik", function (e) {
+            e.preventDefault();
+            var treeview = $("#treeview-telerik").data("kendoTreeView");
+            treeview.remove($(this).closest(".k-item"));
+        });
+    </script>
+    <style>
+
+        #example .demo-section {
+            max-width: none;
+        }
+
+        #example .k-treeview {
+            height: 310px;
+        }
+
+        #example .k-treeview:first-of-type {
+            width: 270px;
+            margin-right: 1px;
+        }
+
+
+       
+        .demo-section {
+            overflow: hidden !important;
+        }
+
+        #treeview-kendo .k-sprite {
+            background-image: url("../content/web/treeview/coloricons-sprite.png");
+        }
+
+        #treeview-telerik .k-sprite {
+            background-image: url("../content/web/treeview/coloricons-sprite.png");
+        }
+
+        .demo-section {
+            height: 300px;
+            margin-bottom: 5px;
+            display: inline-flex;
+            overflow: auto;
+            vertical-align: top;
+        }
+
+        .rootfolder {
+            background-position: 0 0;
+        }
+
+        .folder {
+            background-position: 0 -16px;
+        }
+
+        .pdf {
+            background-position: 0 -32px;
+        }
+
+        .html {
+            background-position: 0 -48px;
+        }
+
+        .image {
+            background-position: 0 -64px;
+        }
+    </style>
+</div>
+
+
+    
+</body>
+</html>

@@ -1,0 +1,84 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+
+    <div class="right_col" role="main">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="example">
+            <div id="grid"></div>
+            <script>
+                $(document).ready(function() {
+                    dataSource = new kendo.data.DataSource({
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "/sem",
+                            },
+                            destroy: {
+                                url: "/deletesem",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+                            },
+                            create: {
+                                url: "/insertsem",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+                            },
+                            parameterMap: function(options, operation) {
+                                if (operation !== "read" && options.models) {
+                                    return {
+                                        models: options.models
+                                    };
+                                }
+                            }
+                        },
+                        batch: true,
+                        pageSize: 10,
+                        schema: {
+                            model: {
+                                id: "sem_id",
+                                fields: {
+                                    sem_id: {
+                                        editable: false
+                                    },
+                                    sem: {
+                                        validation: {
+                                            required: true
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                    });
+                    $("#grid").kendoGrid({
+
+                        dataSource: dataSource,
+                        pageable: true,
+                        height: 550,
+                        toolbar: ["create"],
+                        columns: [{
+                            field: "sem_id",
+                            title: "Sem id",
+                            hidden: true
+                        }, {
+                            field: "sem",
+                            title: "Sem",
+                        }, {
+                            command: ["destroy"],
+                            title: "&nbsp;",
+                            width: "200px"
+                        }],
+                        editable: "popup"
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <%- include("../adminView/footerAdmin.ejs"); -%>

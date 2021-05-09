@@ -1,0 +1,428 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+    <div class="right_col" role="main">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="example">
+            <button id="primaryTextButton" class="k-primary" onclick="open_add_record()">Add Record</button>
+            <div id="grid"></div>
+            <div id="details"></div>
+            <div id="create"></div>
+            <div id="delete"></div>
+        </div>
+    </div>
+    <script>
+        var subwindow = [];
+        var semwindow = [];
+        var divwindow = [];
+        var idForDelete;
+        $(document).ready(function() {
+            var wnd, detailsTemplate, wndadd, createTemplate, deleteTemplate, wnddelete;
+            $.ajax({
+                url: "/student",
+                method: "GET",
+                contentType: "application/json",
+                cache: false,
+                success: function(res) {
+                    semwindow = res.semdata;
+                    divwindow = res.divdata;
+                }
+            });
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: "/student",
+                    },
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "registred_id",
+                        fields: {
+                            registred_id: {
+                                editable: false
+                            },
+                            name: {
+                                validation: {
+                                    required: true
+                                }
+                            },
+                            gender: {
+                                validation: {
+                                    required: true
+                                }
+                            },
+                            sem: {
+                                validation: {
+                                    required: true
+                                }
+                            },
+                            dob: {
+                                validation: {
+                                    required: true
+                                }
+                            },
+                            email: {
+                                validation: {
+                                    required: true
+                                }
+                            },
+                            div: {
+                                validation: {
+                                    required: true
+                                }
+                            }
+                        }
+                    },
+                    data: "userdata"
+                },
+
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                pageable: true,
+                height: 550,
+                columns: [{
+                    field: "registred_id",
+                    title: "Registred id",
+                    hidden: true
+                }, {
+                    field: "name",
+                    title: "Name",
+                    width: "200px"
+                }, {
+                    field: "email",
+                    title: "Email",
+                    format: "{0:c}",
+                    width: "250px"
+                }, {
+                    field: "gender",
+                    title: "Gender",
+                    width: "60px",
+                }, {
+                    field: "dob",
+                    title: "DOB",
+                    width: "120px",
+                    template: "#=dateTemplate(dob)#"
+                }, {
+                    field: "sem",
+                    title: "Sem",
+                    width: "60px",
+                    template: "#=semTemplate(sem) #"
+                }, {
+                    field: "div",
+                    title: "Division",
+                    width: "90px",
+                    template: "#=divTemplate(div) #"
+                }, {
+                    command: [{
+                        text: "View Details",
+                        click: showDetails
+                    }, {
+                        text: "Delete",
+                        click: open_delete_popup
+                    }]
+
+                }]
+            }).data("kendoGrid");
+
+            //kendo window update
+            function showDetails(e) {
+                e.preventDefault();
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                wnd = $("#details")
+                    .kendoWindow({
+                        title: "Student Details",
+                        modal: true,
+                        visible: false,
+                        resizable: false,
+                        width: "500px",
+                    }).data("kendoWindow");
+                detailsTemplate = kendo.template($("#template").html());
+
+                var selectedSem = [];
+                $.each(dataItem.sem, function() {
+                    selectedSem.push(this.sem);
+                });
+                wnd.content(detailsTemplate(dataItem));
+                wnd.center().open();
+                $("#genderselect").kendoDropDownList().data("kendoDropDownList").value(dataItem.gender);
+                var selectedsem = [];
+                $.each(dataItem.sem, function() {
+                    selectedSem.push(this.sem_id);
+                });
+                var selectediv = [];
+                $.each(dataItem.div, function() {
+                    selectediv.push(this.division_id);
+                });
+                $("#semselect").kendoDropDownList().data("kendoDropDownList").value(selectedSem);
+                $("#divselect").kendoDropDownList().data("kendoDropDownList").value(selectediv);
+                $("#datepicker").kendoDatePicker({
+                    format: "MM/dd/yyyy"
+                });
+            }
+
+            function open_delete_popup(e) {
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                idForDelete = dataItem.registred_id;
+                wnddelete = $("#delete")
+                    .kendoWindow({
+                        title: "Delete",
+                        modal: true,
+                        visible: false,
+                        resizable: false,
+                        width: "300px",
+                        height: "100px"
+                    }).data("kendoWindow");
+                deleteTemplate = kendo.template($("#deletetemplate").html());
+                wnddelete.content(deleteTemplate(""));
+                wnddelete.center().open();
+
+            }
+        });
+
+        function fnupdate() {
+            var rid = $("#wnd_registeredid").val();
+            var name = $("#wnd_name").val();
+            var email = $("#wnd_email").val();
+            var dob = $("#datepicker").val();
+            var obj = new Date(dob);
+            obj = obj.toString("yyyy-MM-dd") + "T00:00:00.000Z";
+            var semester = $("#semselect").val();
+            var divsion = $("#divselect").val();
+            var gender = $("#genderselect").val();
+            $.ajax({
+                url: "/updatestudent",
+                method: "POST",
+                cache: false,
+                data: {
+                    registred_id: rid,
+                    name: name,
+                    email: email,
+                    dob: obj,
+                    semester: semester,
+                    gender: gender,
+                    division: divsion
+                },
+                success: function(res) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    $("#details").data("kendoWindow").close();
+                },
+                error: function(res) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    $("#details").data("kendoWindow").close();
+                }
+            })
+        }
+
+        function fncancel() {
+            $("#grid").data("kendoGrid").dataSource.read();
+            $("#details").data("kendoWindow").close();
+        }
+        //delete_record
+        function deleterecord(id) {
+
+            $.ajax({
+                url: "/deletestudent",
+                method: "POST",
+                cache: false,
+                data: {
+                    registred_id: id,
+                },
+                success: function(res) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    $("#delete").data("kendoWindow").close();
+                },
+                error: function(res) {
+
+                }
+            })
+
+        }
+
+        function no() {
+            $("#delete").data("kendoWindow").close();
+        }
+        //ADD_RECORD
+        function open_add_record() {
+            wndadd = $("#create")
+                .kendoWindow({
+                    title: "Create",
+                    modal: true,
+                    visible: false,
+                    resizable: false,
+                    width: "500px",
+                }).data("kendoWindow");
+            createTemplate = kendo.template($("#createtemplate").html());
+            wndadd.content(createTemplate(""));
+            wndadd.center().open();
+            $("#genderselect1").kendoDropDownList().data("kendoDropDownList");
+            $("#semselect1").kendoDropDownList().data("kendoDropDownList");
+            $("#divselect1").kendoDropDownList().data("kendoDropDownList");
+            $("#datepicker1").kendoDatePicker({
+                format: "MM/dd/yyyy"
+            });
+        }
+
+        function fnAdd() {
+            var name = $("#wnd_name1").val();
+            var email = $("#wnd_email1").val();
+            var dob = $("#datepicker1").val();
+            var obj = new Date(dob);
+            obj = obj.toString("yyyy-MM-dd") + "T00:00:00.000Z";
+            var semester = $("#semselect1").val();
+            var gender = $("#genderselect1").val();
+            var division = $("#divselect1").val();
+            $.ajax({
+                url: "/addstudent",
+                method: "POST",
+                cache: false,
+                data: {
+                    name: name,
+                    email: email,
+                    dob: obj,
+                    semester: semester,
+                    gender: gender,
+                    division: division
+                },
+                success: function(res) {
+
+                    if (res.exist == "Done") {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                        $("#create").data("kendoWindow").close();
+                    } else if (res.exist == "Fill all require data") {
+                        $('#lblrequire').html(res.exist);
+                        $("#lblrequire").css("color", "red");
+
+                    } else {
+                        $('#lblmail').html(res.exist);
+                        $("#lblmail").css("color", "red");
+                    }
+                },
+                error: function() {
+                    console.log(Error);
+                }
+            })
+
+        }
+
+        function fncancel_create() {
+            $("#create").data("kendoWindow").close();
+        }
+
+        //TEMPLATE_FOR_GRID_VIEW
+        function semTemplate(sem) {
+            var ul = "<ul style='list-style-image:url(https://cdn3.iconfinder.com/data/icons/funky/136/Fire-16.png);padding:20px'>"
+            $.each(sem, function() {
+                ul = ul + "<li style='padding-top:10px'>" + "#" + this.sem + "</li>";
+            })
+            ul = ul + "</ul>"
+            return ul;
+        }
+
+        function divTemplate(division) {
+            var ul = "<ul style='list-style-image:url(https://cdn3.iconfinder.com/data/icons/funky/136/Fire-16.png);padding:20px'>"
+            $.each(division, function() {
+                ul = ul + "<li style='padding-top:10px'>" + this.division + "</li>";
+            })
+            ul = ul + "</ul>"
+            return ul;
+        }
+
+        function dateTemplate(dob) {
+            var d = dob.slice(0, 10).split('-');
+            var dt = "<h6>" + d[2] + '/' + d[1] + '/' + d[0]; + "< /h6>";
+            return dt;
+        }
+    </script>
+    <!-- TEMPLATE_FOR_WINDOW -->
+    <script type="text/x-kendo-template" id="template">
+        <div id="details-container">
+            <input type="hidden" id="wnd_registeredid" value="#= registred_id#" type="text" class="k-textbox" disabled="true" style="width: 100%;" />
+            <h6>NAME:</h6>
+            <input id="wnd_name" value="#= name#" type="text" class="k-textbox" style="width: 100%;" />
+            <input type="hidden" id="wnd_email" value="#= email#" type="text" class="k-textbox" style="width: 100%;" />
+            <h6>DOB:</h6>
+            <input id="datepicker" value="#= dob#" style="width: 100%;" />
+            <h6>GENDER:</h6>
+            <select id="genderselect">
+							<option value="male">male</option>
+							<option value="female">female</option>
+						</select>
+            <h6>SEM:</h6>
+            <select id="semselect">
+						#for(i=0;i<self.semwindow.length;i++)
+						{#
+							<option value="#:self.semwindow[i].sem_id#">
+								#:self.semwindow[i].sem#
+							</option>
+						# } #
+					</select>
+            <h6>DIVISION:</h6>
+            <select id="divselect">
+						#for(i=0;i<self.divwindow.length;i++)
+						{#
+							<option value="#:self.divwindow[i].division_id#">
+								#:self.divwindow[i].division#
+							</option>
+						# } #
+					</select>
+            <center>
+                <button class="k-button" id="updateTeacher" onclick="fnupdate()"> Update </button>
+                <button class="k-button" id="cancelTeacher" onclick="fncancel()"> Cancel </button>
+            </center>
+        </div>
+    </script>
+
+    <script type="text/x-kendo-template" id="createtemplate">
+        <label id="lblrequire"></label>
+
+        <h6>NAME:</h6>
+        <input id="wnd_name1" value="" type="text" class="k-textbox" style="width: 100%;" />
+        <h6>EMAIL:</h6>
+        <input id="wnd_email1" value="" type="text" class="k-textbox" style="width: 100%;" />
+        <label id="lblmail"></label>
+        <h6>DOB:</h6>
+        <input id="datepicker1" value="" style="width: 100%;" />
+        <h6>GENDER:</h6>
+        <select id="genderselect1">
+							<option value="male">male</option>
+							<option value="female">female</option>
+						</select>
+        <h6>SEM:</h6>
+        <select id="semselect1">
+						#for(i=0;i<self.semwindow.length;i++)
+						{#
+							<option value="#:self.semwindow[i].sem_id#">
+								#:self.semwindow[i].sem#
+							</option>
+						# } #
+					</select>
+        <h6>DIVISION:</h6>
+        <select id="divselect1">
+						#for(i=0;i<self.divwindow.length;i++)
+						{#
+							<option value="#:self.divwindow[i].division_id#">
+								#:self.divwindow[i].division#
+							</option>
+						# } #
+					</select>
+        <center>
+            <button class="k-button" id="createTeacher" onclick="fnAdd()"> Create </button>
+            <button class="k-button" id="cancelTeacher" onclick="fncancel_create()"> Cancel </button>
+        </center>
+        </div>
+    </script>
+    <script type="text/x-kendo-template" id="deletetemplate">
+        <center>
+            <h6>Are you sure you want to delete?</h6>
+            <button id="btnyes" class="k-button" onclick="deleterecord('#:self.idForDelete#')">Yes</button>
+            <button id="btnno" class="k-button" onclick="no()">No</button>
+        </center>
+    </script>
+
+
+    <%- include("../adminView/footerAdmin.ejs"); -%>

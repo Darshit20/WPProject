@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+    <link href="build\kendoui.for.jquery.2020.2.513.trial\styles\kendo.common.min.css" rel="stylesheet">
+    <!-- <link href="build\kendoui.for.jquery.2020.2.513.trial\styles\kendo.default.min.css" rel="stylesheet"> -->
+    <link href="build\kendoui.for.jquery.2020.2.513.trial\styles\kendo.black.min.css" rel="stylesheet">
+    <link href="build\kendoui.for.jquery.2020.2.513.trial\styles\kendo.default.mobile.min.css" rel="stylesheet">
+
+    <title>Gentelella Alela! | </title>
+
+    <script src="https://use.typekit.net/hoy3lrg.js"></script>
+    <script>
+        try {
+            Typekit.load({
+                async: true
+            });
+        } catch (e) {}
+    </script>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="jqvmap/dist/jqvmap.min.css" rel="stylesheet" />
+    <!-- bootstrap-daterangepicker -->
+    <link href="bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    <link href="build/css/chatstyle.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="build\kendoui.for.jquery.2020.2.513.trial\js\jquery.min.js"></script>
+    <script src="build\kendoui.for.jquery.2020.2.513.trial\js\kendo.all.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+</head>
+
+
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="/indexstudent" class="site_title"><i class="fa fa-institution"></i> <span>J.P.DAWER</span></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            <img src="<%=pic%>" alt="..." class="img-circle profile_img">
+                        </div>
+                        <div class="profile_info">
+                            <span>Welcome,</span>
+                            <h2 name="profile">
+                                <%= userInfo %>
+                                    <b style="color: tomato;">(<%=role%>)</b>
+                            </h2>
+                        </div>
+                    </div>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+
+                            <ul class="nav side-menu">
+                                <li><a href="/indexstudent" id="link1"><i class="fa fa-home"></i> Home </a>
+                                </li>
+                                <li><a href="/attendanceStudent"><i class="fa fa-tachometer"></i> Attendance </a>
+                                </li>
+                                <li><a href="/chatStudent"><i class="fa fa-comments"></i> Chat </a>
+                                </li>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+                <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="/">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+
+                </div>
+                <!-- /menu footer buttons -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <div class="nav toggle">
+                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                </div>
+                <nav class="nav navbar-nav">
+                    <ul class=" navbar-right">
+                        <li class="nav-item dropdown open" style="padding-left: 15px;">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+								<img src="<%=pic%>" alt="">
+								<%= userInfo %>
+								
+                            </a>
+                            <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/updateProfileStudent">Update profile</a>
+                                <a class="dropdown-item" href="/"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                            </div>
+                        </li>
+
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->

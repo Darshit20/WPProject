@@ -1,0 +1,174 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+
+    <div class="right_col" role="main">
+
+        <div class="x_content">
+            <form class="" action="" method="post" enctype="multipart/form-data" novalidate>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Profile pic</label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" type="file" name="fileupd" /> </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+				  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" data-validate-length-range="6" data-validate-words="2" id="uname" value="" />
+                    </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Sem<span
+				  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <p style="padding: 5px;">
+                            <% sem_data.forEach(function(data){ %>
+                                <input type="checkbox" name="sem[]" id="<%=data.sem_id%>" value="<%=data.sem%>" class="flat sem" />
+                                <%=data.sem%>
+                                    <%  }) %>
+                        </p>
+                    </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span
+				  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" name="email" class='email' id="uemail" required="required" value="" type="email" /></div>
+                    <label id="lblmail"></label>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Subject:</label>
+                    <p style="padding: 5px;">
+                        <% subject_data.forEach(function(data){ %>
+                            <input type="checkbox" name="subject[]" id="<%=data.subject_id%>" value="
+						<%=data.subject_name%>" class="flat sub" />
+                            <%=data.subject_name%>
+                                <% }) %>
+                                    <p>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Subject:</label>
+                    <p style="padding: 5px;">
+                        <% div_data.forEach(function(data){ %>
+                            <input type="checkbox" name="division[]" id="<%=data.division_id%>" value="
+						<%=data.division%>" class="flat div" />
+                            <%=data.division%>
+                                <% }) %>
+                                    <p>
+                </div>
+                <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+                <label>
+				  <input type="radio" name="gender" value="male" id="umale"  >&nbsp;&nbsp;Male 
+				</label> &nbsp;&nbsp;
+                <label>
+				  <input type="radio" name="gender" value="female" id="ufemale" >&nbsp;&nbsp;Female
+				</label>
+                <br>
+                <br>
+                <label class="col-form-label col-md-3 col-sm-3  label-align">DOB<span
+					class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" class='date' type="date" name="date" value="" id="udate" required='required'></div>
+                <br>
+                <br>
+                <br>
+                <div class="col-md-6 offset-md-3">
+                    <button class="btn btn-primary" id="btns" type="submit">Insert</button>
+                    <button type='reset' class="btn btn-success" onclick="clr()">Reset</button>
+                </div>
+        </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="validator/multifield.js"></script>
+    <script src="validator/validator.js"></script>
+    <script>
+        // initialize a validator instance from the "FormValidator" constructor.
+        // A "<form>" element is optionally passed as an argument, but is not a must
+        var validator = new FormValidator({
+            "events": ['blur', 'input', 'change']
+        }, document.forms[0]);
+    </script>
+    <!-- jQuery -->
+    <script src="jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateEmail() {
+            var email1 = $('#uemail').val();
+            var name1 = $('#uname').val();
+            var dob1 = $('#udate').val();
+            var fname = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '');
+            var unique = Date.now();
+            var final = unique + fname;
+
+            var files = $('input[type=file]')[0].files[0];
+
+
+            if ($('#umale').prop("checked")) {
+                var gender1 = $('#umale').val();
+
+            } else {
+                var gender1 = $('#ufemale').val();
+            }
+            var checked_subject = $('.sub:checked').map(function() {
+                return this.id;
+            }).get();
+            var checked_sem = $('.sem:checked').map(function() {
+                return this.id;
+            }).get();
+            var checked_div = $('.div:checked').map(function() {
+                return this.id;
+            }).get();
+
+            $.ajax({
+                url: "/registerteacher",
+                method: "POST",
+                data: {
+                    namej: name1,
+                    emailj: email1,
+                    genderj: gender1,
+                    dobj: dob1,
+                    checked_subject1: checked_subject,
+                    checked_sem1: checked_sem,
+                    checked_div1: checked_div,
+                    pic: files
+                },
+
+                contentType: "application/x-www-form-urlencoded",
+                success: function(res) {
+                    console.log(res.exist);
+                    $('#lblmail').html(res.exist);
+
+                },
+                error: function(err) {
+                    alert(err);
+
+                }
+            });
+        }
+        $(document).ready(function() {
+            $('#btns').click(function(e) {
+                e.preventDefault();
+                validateEmail();
+            })
+
+
+
+        });
+
+        $("#btns").click(function(event) {
+            event.preventDefault();
+            var checked_subject = $('.sub:checked').map(function() {
+                return this.id;
+            }).get()
+            console.log(checked_subject);
+        });
+
+        function clr() {
+            $("#lblmail").text(" ");
+        }
+    </script>
+
+
+    <%- include("../adminView/footerAdmin.ejs"); -%>

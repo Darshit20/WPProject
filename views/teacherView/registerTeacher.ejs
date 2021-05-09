@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="nprogress/nprogress.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+</head>
+
+<body class="nav-md">
+    <div class="right_col" role="main">
+
+        <div class="x_content">
+            <form class="" action="" method="post" enctype="multipart/form-data" novalidate>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Profile pic</label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" type="file" name="fileupd" /> </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Name<span
+					  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="name" value="" id="uname" />
+                    </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Sem<span
+					  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <p style="padding: 5px;">
+                            <% sem_data.forEach(function(data){ %>
+                                <input type="checkbox" name="sem[]" id="<%=data.sem_id%>" value="<%=data.sem%>" class="flat sem" />
+                                <%=data.sem%>
+                                    <%  }) %>
+                        </p>
+                    </div>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span
+					  class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" name="email" class='email' id="uemail" required="required" type="email" /></div>
+                    <label id="lblmail"></label>
+                </div>
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">Subject:</label>
+                    <p style="padding: 5px;">
+                        <% subject_data.forEach(function(data){ %>
+                            <input type="checkbox" name="subject[]" id="<%=data.subject_id%>" value="
+                            <%=data.subject_name%>" class="flat sub" />
+                            <%=data.subject_name%>
+                                <% }) %>
+                                    <p>
+                </div>
+                <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+                <label>
+					  <input type="radio" name="gender" value="male" id="umale"  >&nbsp;&nbsp;Male 
+					</label> &nbsp;&nbsp;
+                <label>
+					  <input type="radio" name="gender" value="female" id="ufemale" >&nbsp;&nbsp;Female
+					</label>
+                <br>
+                <br>
+                <label class="col-form-label col-md-3 col-sm-3  label-align">DOB<span
+						class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" class='date' type="date" name="date" id="udate" required='required'></div>
+                <br>
+                <br>
+                <br>
+                <div class="col-md-6 offset-md-3">
+                    <button class="btn btn-primary" id="btns" type="button">Update</button>
+                    <button type='reset' class="btn btn-success">Reset</button>
+                </div>
+        </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="validator/multifield.js"></script>
+    <script src="validator/validator.js"></script>
+    <script>
+        // initialize a validator instance from the "FormValidator" constructor.
+        // A "<form>" element is optionally passed as an argument, but is not a must
+        var validator = new FormValidator({
+            "events": ['blur', 'input', 'change']
+        }, document.forms[0]);
+    </script>
+    <!-- jQuery -->
+    <script src="jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateEmail() {
+            var email1 = $('#uemail').val();
+            var name1 = $('#uname').val();
+            var dob1 = $('#udate').val();
+
+            if ($('#umale').prop("checked")) {
+                var gender1 = $('#umale').val();
+            } else {
+                var gender1 = $('#ufemale').val();
+            }
+            var selected = new Array();
+            $('.sub:checked').each(function() {
+                selected.push(this.id);
+            });
+            if (selected.length > 0) {
+                selected.join(",");
+
+            }
+            var selectedsem = new Array();
+            $('.sem:checked').each(function() {
+                selectedsem.push(this.id);
+            });
+            if (selectedsem.length > 0) {
+
+                selectedsem.join(",");
+
+            }
+            console.log(selectedsem);
+            console.log(selected);
+            var fname = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '');
+            var unique = Date.now();
+            var final = unique + fname;
+
+
+
+
+            $.ajax({
+                url: "/teacherRegistration",
+                method: "POST",
+                dataType: 'json',
+                contentType: "application/json",
+                data: {
+                    namej: name1,
+                    emailj: email1,
+                    genderj: gender1,
+                    dobj: dob1,
+                    checked_subject1: selected,
+                    sem: selectedsem,
+                    pic: final
+                },
+                contentType: "application/x-www-form-urlencoded",
+                cache: false,
+                success: function(res) {
+                    console.log(res.exist);
+                    $('#lblmail').html(res.exist);
+
+                },
+                error: function(err) {
+                    alert(err);
+
+                }
+            });
+        }
+        $(document).ready(function() {
+            $('#btns').click(function(e) {
+                validateEmail();
+            })
+        });
+    </script>
+
+</body>
+
+</html>

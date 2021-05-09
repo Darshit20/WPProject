@@ -1,0 +1,90 @@
+<%- include("../teacherView/headerTeacher.ejs"); -%>
+    <div class="right_col" role="main">
+        <div class="col-md-12 col-sm-12 ">
+            <b> <h3 style="color: whitesmoke;">Announcements</h3></b>
+            <div id="example">
+                <div id="grid"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "/getannouncement"
+                    },
+                    pageSize: 20
+                },
+                height: 550,
+
+                sortable: {
+                    mode: "single",
+                    allowUnsort: false
+                },
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    buttonCount: 5
+                },
+                columns: [{
+                    field: "time",
+                    title: "Date",
+                    width: 150,
+                    template: "#=dateTemplate(time)#"
+                }, {
+                    field: "from.name",
+                    title: "From",
+                    width: 200
+                }, {
+                    field: "body",
+                    title: "Discription",
+                    template: "#= htmlDecode(body) #"
+                }, {
+                    field: "file",
+                    title: "Pic",
+                    width: 200,
+                    template: '<img src="#= file #" alt="image" width="100px" height="100px" />'
+
+                }, ]
+            });
+        });
+
+        function dateTemplate(time) {
+            var d = time.slice(0, 10).split('-');
+            var dt = "<h6>" + d[2] + '/' + d[1] + '/' + d[0]; + "< /h6>";
+            return dt;
+        }
+
+
+        function htmlDecode(value) {
+            return value.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        }
+    </script>
+
+
+    <style type="text/css">
+        .customer-photo {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: 32px 35px;
+            background-position: center center;
+            vertical-align: middle;
+            line-height: 32px;
+            box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0, 0, 0, .2);
+            margin-left: 5px;
+        }
+        
+        .customer-name {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 32px;
+            padding-left: 3px;
+        }
+    </style>
+
+
+    <%- include("../teacherView/footerTeacher.ejs"); -%>

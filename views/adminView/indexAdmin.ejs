@@ -1,0 +1,90 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+    <style>
+        .divinline {
+            display: inline-block;
+            margin-right: 60px;
+            box-sizing: border-box;
+            width: 180px;
+        }
+    </style>
+
+    <div class="right_col" role="main">
+        <div class="x_content">
+
+            <div class="card divinline" style="background-color: #ff4e00;
+			background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);">
+                <center>
+                    <h1 style="color: white;">
+                        <%=totalstudent%>
+                    </h1>
+                    <h3 style="color: white;">STUDENT</h3>
+                    <div class="card-body ">
+                        <a href="/managestudent" class="btn btn-primary">Go</a>
+                    </div>
+                </center>
+            </div>
+
+            <div class="card divinline" style="background-color: #6e72fc;
+			background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);">
+                <center>
+                    <h1 style="color: white;">
+                        <%=totalteacher%>
+                    </h1>
+                    <h3 style="color: white;">TEACHER</h3>
+                    <div class="card-body ">
+                        <a href="/manageteacher" class="btn btn-primary">Go</a>
+                    </div>
+                </center>
+            </div>
+
+
+            <div class="card divinline" style="background-color: #f8ef42;
+			background-image: linear-gradient(315deg, #f8ef42 0%, #0fd64f 74%);">
+                <center>
+                    <h1 style="color: white;">
+                        <%=totalsubject%>
+                    </h1>
+                    <h3 style="color: white;">SUBJECT</h3>
+                    <div class="card-body ">
+                        <a href="/managesubject" class="btn btn-primary">GO</a>
+                    </div>
+                </center>
+            </div>
+
+            <div class="card divinline" style="background-color: #05e8ba;
+			background-image: linear-gradient(315deg, #05e8ba 0%, #087ee1 74%);
+			 	">
+                <center>
+                    <h1 style="color: white;">
+                        <%=totalsem%>
+                    </h1>
+                    <h3>SEMESTER</h3>
+                    <div class="card-body ">
+                        <a href="/managesem" class="btn btn-primary">Go</a>
+                    </div>
+                </center>
+            </div>
+
+
+            <div class="card divinline" style="background-color: #feae96;
+			background-image: linear-gradient(315deg, #feae96 0%, #fe0944 74%);">
+                <center>
+                    <h1 style="color: white;">
+                        <%=totaldiv%>
+                    </h1>
+                    <h3 style="color: white;">DIVISION</h3>
+                    <div class="card-body ">
+                        <a href="/managedivision" class="btn btn-primary">Go</a>
+                    </div>
+                </center>
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+
+    <%- include("../adminView/footerAdmin.ejs"); -%>

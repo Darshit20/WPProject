@@ -1,0 +1,100 @@
+<%- include("../adminView/headerAdmin.ejs"); -%>
+
+    <div class="right_col" role="main">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="example">
+            <div id="grid"></div>
+            <script>
+                var isEditing = false;
+                var refreshInterval = 6000;
+
+
+                $(document).ready(function() {
+                    dataSource = new kendo.data.DataSource({
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "/division",
+
+                            },
+
+                            destroy: {
+                                url: "/deletedivision",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+                            },
+                            create: {
+                                url: "/insertdivision",
+                                dataType: "json",
+                                type: "POST",
+                                complete: function(e) {
+                                    $("#grid").data("kendoGrid").dataSource.read();
+                                }
+
+                            },
+                            parameterMap: function(options, operation) {
+                                if (operation !== "read" && options.models) {
+                                    return {
+                                        models: options.models
+                                    };
+                                }
+                            }
+
+                        },
+
+                        batch: true,
+                        pageSize: 10,
+
+                        schema: {
+                            model: {
+                                id: "division_id",
+                                fields: {
+                                    division_id: {
+                                        editable: false
+                                    },
+                                    division: {
+                                        validation: {
+                                            required: true
+                                        }
+                                    },
+
+                                }
+
+                            }
+                        }
+
+                    });
+                    $("#grid").kendoGrid({
+
+                        dataSource: dataSource,
+                        pageable: true,
+                        height: 550,
+                        toolbar: ["create"],
+                        columns: [{
+                            field: "division_id",
+                            title: "Division id",
+                            hidden: true
+                        }, {
+                            field: "division",
+                            title: "Division",
+                        }, {
+                            command: ["destroy"],
+                            title: "&nbsp;",
+                            width: "200px"
+                        }],
+                        editable: "popup"
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+
+
+    <%- include("../adminView/footerAdmin.ejs"); -%>

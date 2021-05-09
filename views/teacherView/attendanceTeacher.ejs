@@ -1,0 +1,191 @@
+<%- include("../teacherView/headerTeacher.ejs"); -%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        th {
+            background-image: url(uploads/glass.png), linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+            background-position: 50% 50%;
+            background-color: #292525;
+            border: none !important;
+        }
+        
+        td {
+            border-style: solid;
+            border-width: 0 0 0 1px;
+            border-color: black;
+            border-top: 0px !important;
+        }
+        
+        tr {
+            background-image: linear-gradient(315deg, #000000 0%, #414141 74%);
+        }
+        
+        tr:hover {
+            background-image: url(uploads/glass.png), linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
+
+
+    <!-- page content -->
+
+    <div class="right_col" role="main">
+        <div class="attendance_panel">
+            <div class="attendance_title">
+                <label id="errid"></label>
+                <table class="table" cellpadding="20px" style="color: whitesmoke;">
+                    <tr>
+                        <th>
+                            DATE <input type="Date" class="form-control" id="datepicker">
+                        </th>
+                        <th>SEM <select id="semid" class="form-control">
+						<% sem_data.forEach(function(sem_list){ %>
+						<option >
+							<%= sem_list.sem %>
+						</option>
+				<%	}) %>	
+					</select></th>
+                        <th>
+                            DIV
+                            <select name="divname" id="divid" class="form-control">
+					
+					<option value="A">A</option>
+					<option value="B">B</option>
+					</select>
+                        </th>
+                        <th>
+                            SUBJECT
+                            <select id="subjectid" class="form-control">
+							<% subject_data.forEach(function(sub_list){ %>
+							<option >
+								<%= sub_list.subject_name %>
+							</option>
+					<%	}) %>	
+						</select>
+                        </th>
+                        <th>
+                            <br>
+                            <button class="btn btn-primary" id="btnfill">Get student list</button>
+                        </th>
+                    </tr>
+                </table>
+
+                <table class="table" style="width: 100%;color: whitesmoke;">
+                    <thead>
+                        <tr>
+                            <th>Roll no</th>
+                            <th>Name</th>
+                            <th>attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendbody">
+                    </tbody>
+                </table>
+            </div>
+            <button id="btnput" class="btn btn-primary" style="top:90%;left:94.3%;position:absolute">Submit</button>
+        </div>
+
+    </div>
+
+    <!-- /page content -->
+
+    <script>
+        $('#btnfill').click(function() {
+            var sem = $("#semid :selected").text();
+            var div = $("#divid :selected").text();
+            var dob = $('#datepicker').val();
+            var jsonData = {
+                div: div,
+                sem: sem,
+                date: dob
+            }
+            $.ajax({
+                url: "/getrecord",
+                method: "POST",
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify(jsonData),
+                cache: false,
+                success: function(res) {
+                    console.log(res);
+                    var tablecoulmn = "";
+                    var cnt = 1;
+                    if (res == "Please select date!") {
+                        $('#errid').html(res);
+                        $('#errid').css("color", "red");
+                    } else {
+                        $.each(res, function() {
+                            var tablerow = '<tr class="trclass k-alt" id="' + this.registred_id + '">' + '<td class="rnoclass">' + cnt++ + '</td>' + '<td class="nameclass">' + this.name + '</td>' + '<td class="attendstatus" style="background:green;color:white">' + "Present" + '</td>' + '</tr>';
+                            tablecoulmn = tablecoulmn + tablerow;
+                        });
+
+                        $('#attendbody').html(tablecoulmn);
+
+                    }
+                },
+                error: function(err) {
+                    alert(err);
+                }
+            });
+        });
+
+
+        $(document).on('click', '.attendstatus', function() {
+            var color = $(this).css("background-color");
+            console.log(color);
+            if (color == "rgb(0, 128, 0)") {
+                $(this).css("background", "tomato");
+                $(this).html("Absent");
+            } else {
+                $(this).css("background", "green");
+                $(this).html("Present");
+            }
+        });
+
+
+
+        $('#btnput').click(function() {
+            var teacher_id = '<%=userId%>';
+            var attendance_array = [];
+            var date = $('#datepicker').val();
+            var subject = $("#subjectid :selected").val();
+            $(".trclass").each(function() {
+                var student_id = $(this).attr("id");
+                var status = $(this).find(".attendstatus").text();
+                var rno = $(this).find(".rnoclass").text();
+                attendance_array.push({
+                    std_id: student_id,
+                    std_status: status,
+                    attendance_by: teacher_id,
+                    attendance_on: date,
+                    sub: subject,
+                    rollno: rno
+                });
+            });
+            var jsonData = JSON.stringify(attendance_array)
+            $.ajax({
+                url: "/savestudents",
+                method: "POST",
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    attendance: jsonData
+                }),
+                cache: false,
+                success: function(res) {
+                    if (res.status == "Please fill the attendance first!") {
+                        $('#errid').html(res.status);
+                        $('#errid').css("color", "red");
+                    }
+
+                    $("#attendbody").html("");
+
+                },
+                error: function(err) {
+                    alert(err);
+                }
+            });
+
+        });
+    </script>
+
+
+    <%- include("../teacherView/footerTeacher.ejs"); -%>

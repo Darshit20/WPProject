@@ -1,0 +1,101 @@
+<%- include("../teacherView/headerTeacher.ejs"); -%>
+
+	<div class="right_col" role="main" style="width: 1800px;">
+		<br>
+		<br>
+		<br>
+		<div id="example">
+			<button id="export" class="k-button k-button-icontext hidden-on-narrow"><span
+					class="k-icon k-i-excel"></span>Export to Excel</button>
+			<div id="pivotgrid" class="hidden-on-narrow"></div>
+			<div class="responsive-message"></div>
+			<script>
+				$(document).ready(function () {
+					var pivotgrid = $("#pivotgrid").kendoPivotGrid({
+						excel: {
+							fileName: "Attendance Report .xlsx",
+							proxyURL: "https://demos.telerik.com/kendo-ui/service/export",
+							filterable: true
+						},
+						filterable: true,
+						columnWidth: 120,
+						height: 530,
+						dataSource: {
+							type: "json",
+							transport: {
+								read: "/getattendancedata"
+							},
+							schema: {
+
+								cube: {
+									measures: {
+										"attendance": {
+											field: "attendance",
+											aggregate: function (value, state) {
+												if (value == "Present")
+													return "P";
+												else
+													return "A";
+											}
+										}
+									}
+								}
+							},
+							columns: [{
+								name: "attendance_on",
+								template: "#=dateTemplate(attendance_on)#"
+
+							}, {
+								name: "subject.subject_name"
+							}],
+							rows: [{
+								name: "rollno"
+							}],
+							measures: {
+								values: ["attendance"],
+								axis: "columns"
+							}
+
+
+
+						}
+					}).data("kendoPivotGrid");
+
+
+					$("#export").click(function () {
+						pivotgrid.saveAsExcel();
+					});
+				});
+
+				function dateTemplate(dob) {
+					var d = dob.slice(0, 10).split('-');
+					var dt = "<h6>" + d[2] + '/' + d[1] + '/' + d[0]; + "< /h6>";
+					return dt;
+				}
+			</script>
+			<style>
+				#example {
+					width: 76%;
+					/* overflow: auto; */
+					float: left;
+				}
+
+				#pivotgrid {
+					width: 94%;
+				}
+
+				.hidden-on-narrow {
+					display: inline-block;
+					vertical-align: top;
+				}
+
+				#export {
+					margin: 0 0 10px 1px;
+				}
+			</style>
+		</div>
+
+	</div>
+
+
+	<%- include("../teacherView/footerTeacher.ejs"); -%>

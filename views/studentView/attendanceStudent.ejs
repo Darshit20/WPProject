@@ -1,0 +1,78 @@
+<%- include("../studentView/headerStudent.ejs"); -%>
+    <style>
+        th {
+            background-image: url(uploads/glass.png), linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+            background-position: 50% 50%;
+            background-color: #292525;
+            border: none !important;
+        }
+        
+        td {
+            border-style: solid;
+            border-width: 0 0 0 1px;
+            border-color: black;
+            border-top: 0px !important;
+        }
+        
+        tr {
+            background-image: linear-gradient(315deg, #000000 0%, #414141 74%);
+        }
+        
+        tr:hover {
+            background-image: url(uploads/glass.png), linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
+    <div class="right_col" role="main">
+        <div class="attendance_panel">
+            <h3 style="color: whitesmoke;">ATTENDANCE SUMMARY</h3>
+            <div class="attendance_title">
+                <table id="tblid" class="table" style="color: whitesmoke;">
+                    <tr>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Present
+                        </th>
+                        <th>
+                            Percentage
+                        </th>
+                    </tr>
+                    <tbody id="tblbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        var subjects = '<%-subjectdetail%>';
+        var totalDays = ' <%-total%>';
+        var presentDays = ' <%-present%>';
+        subjects = subjects.split(",");
+        totalDays = totalDays.split(",");
+        presentDays = presentDays.split(",");
+        console.log(subjects[0]);
+        for (let index = 0; index < subjects.length; index++) {
+            var subject = subjects[index];
+            var total = totalDays[index];
+            var present = presentDays[index];
+            var percent = parseFloat(((present / total) * 100).toFixed(2));
+            var percentTd = "";
+            if (percent > 90) {
+                percentTd = '<td style="color:green">' + percent + ' %</td>';
+            } else if (percent > 70) {
+                percentTd = '<td style="color:orange">' + percent + ' %</td>';
+            } else {
+                percentTd = '<td style="color:red">' + percent + ' %</td>';
+
+            }
+
+            var td = td + '<tr><td>' + subject + '</td><td>' + present + ' out of ' + total + '</td>' + percentTd + '</tr>'
+
+        }
+        $('#tblbody').html(td);
+    </script>
+    <!-- /page content -->
+
+    <%- include("../studentView/footerStudent.ejs"); -%>
