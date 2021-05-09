@@ -86,7 +86,7 @@ router.post("/addteacher", function(req, res) {
                                 dob: dob,
                                 password: Upass1,
                                 sem: semdata,
-                                pic: "https://cdn2.iconfinder.com/data/icons/green-2/32/expand-color-web2-23-512.png"
+                                pic: "uploads/defaultPhoto.png"
                             })
                             console.log(user);
                             user.save();
@@ -104,12 +104,12 @@ router.post("/addteacher", function(req, res) {
                                     requireTLS: true,
                                     secure: false,
                                     auth: {
-                                        user: 'prayagdalal11@gmail.com',
-                                        pass: 'prayag@2103$'
+                                        user: 'projectwp064@gmail.com',
+                                        pass: 'wpnodejs'
                                     },
                                     logger: true,
                                     debug: false,
-                                    from: 'prayagdalal11@gmail.com',
+                                    from: 'projectwp064@gmail.com',
                                 });
                                 let message = {
                                     to: email,

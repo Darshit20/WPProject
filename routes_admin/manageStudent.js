@@ -90,7 +90,7 @@ router.post("/addstudent", function (req, res) {
 								password: Upass1,
 								sem: semdata,
 								div: divisiondata,
-								pic: "https://cdn2.iconfinder.com/data/icons/green-2/32/expand-color-web2-23-512.png"
+								pic: "uploads/defaultPhoto.png"
 							})
 							console.log(user);
 							user.save();

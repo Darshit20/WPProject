@@ -45,7 +45,10 @@ path.join(__dirname, 'views/adminView/')
 app.use(bodyParser());
 app.use(express.static("public"));
 app.use(session({ 'secret': '343ji43j4n3jn4jk3n' }));
-mongoose.connect("mongodb://localhost:27017/collageDB", { useNewUrlParser: true });
+mongoose.connect(
+	"mongodb://localhost:27017/CollegeDB",
+	 { useNewUrlParser: true }
+	);
 
 
 app.use(indexStudent);
@@ -80,4 +83,6 @@ if (port == null || port == "") {
 
 app.listen(port, function () {
 	console.log("connected to server");
+	const md5 = require('md5');
+	console.log(md5("Admin"))
 });
