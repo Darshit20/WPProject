@@ -46,7 +46,7 @@ app.use(bodyParser());
 app.use(express.static("public"));
 app.use(session({ 'secret': '343ji43j4n3jn4jk3n' }));
 mongoose.connect(
-	"mongodb://localhost:27017/CollegeDB",
+	"mongodb+srv://admin:admin@cluster0.dcdkq.mongodb.net/CollegeDB?retryWrites=true&w=majority",
 	 { useNewUrlParser: true }
 	);
 
